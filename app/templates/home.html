@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Page Pulse | URL Intelligence</title>
+
+    <style>
+        :root {
+            --background: #080b14;
+            --card: rgba(255, 255, 255, 0.07);
+            --border: rgba(255, 255, 255, 0.12);
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --accent: #7c3aed;
+            --accent-light: #a78bfa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            color: var(--text);
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+            background:
+                radial-gradient(
+                    circle at 15% 20%,
+                    rgba(124, 58, 237, 0.22),
+                    transparent 28%
+                ),
+                radial-gradient(
+                    circle at 85% 10%,
+                    rgba(14, 165, 233, 0.15),
+                    transparent 25%
+                ),
+                var(--background);
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0.08;
+            background-image:
+                linear-gradient(
+                    rgba(255, 255, 255, 0.08) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(255, 255, 255, 0.08) 1px,
+                    transparent 1px
+                );
+            background-size: 50px 50px;
+        }
+
+        nav {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1180px;
+            margin: auto;
+            padding: 28px 24px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-icon {
+            display: grid;
+            place-items: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            font-size: 18px;
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--accent),
+                    #2563eb
+                );
+            box-shadow:
+                0 0 30px rgba(124, 58, 237, 0.45);
+        }
+
+        .nav-link {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 14px;
+            transition: 0.25s ease;
+        }
+
+        .nav-link:hover {
+            color: white;
+        }
+
+        main {
+            position: relative;
+            z-index: 1;
+            max-width: 1180px;
+            margin: auto;
+            padding: 70px 24px 100px;
+        }
+
+        .hero {
+            max-width: 850px;
+            margin: auto;
+            text-align: center;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            color: var(--accent-light);
+            font-size: 13px;
+            background: rgba(124, 58, 237, 0.1);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 12px #22c55e;
+        }
+
+        h1 {
+            margin-top: 28px;
+            font-size: clamp(48px, 8vw, 92px);
+            line-height: 0.98;
+            letter-spacing: -5px;
+        }
+
+        .gradient-text {
+            background:
+                linear-gradient(
+                    110deg,
+                    #ffffff 20%,
+                    #c4b5fd 50%,
+                    #60a5fa 80%
+                );
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero-description {
+            max-width: 650px;
+            margin: 28px auto 0;
+            color: var(--muted);
+            font-size: 18px;
+            line-height: 1.7;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-top: 38px;
+        }
+
+        .button {
+            padding: 14px 22px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            transition:
+                transform 0.25s ease,
+                box-shadow 0.25s ease;
+        }
+
+        .button:hover {
+            transform: translateY(-3px);
+        }
+
+        .primary-button {
+            color: white;
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--accent),
+                    #2563eb
+                );
+            box-shadow:
+                0 12px 35px rgba(124, 58, 237, 0.3);
+        }
+
+        .secondary-button {
+            color: white;
+            border: 1px solid var(--border);
+            background: var(--card);
+        }
+
+        .audit-visual {
+            position: relative;
+            max-width: 950px;
+            margin: 85px auto 0;
+            padding: 1px;
+            border-radius: 24px;
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(167, 139, 250, 0.7),
+                    rgba(96, 165, 250, 0.15),
+                    rgba(255, 255, 255, 0.05)
+                );
+        }
+
+        .terminal {
+            overflow: hidden;
+            border-radius: 23px;
+            background: rgba(8, 11, 20, 0.94);
+            box-shadow:
+                0 30px 80px rgba(0, 0, 0, 0.4);
+        }
+
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .terminal-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #64748b;
+        }
+
+        .terminal-title {
+            margin-left: 8px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .terminal-body {
+            padding: 32px;
+            font-family: "Courier New", monospace;
+            font-size: 14px;
+            line-height: 2;
+        }
+
+        .command {
+            color: #c4b5fd;
+        }
+
+        .success {
+            color: #86efac;
+        }
+
+        .muted {
+            color: #64748b;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-top: 70px;
+        }
+
+        .feature-card {
+            padding: 28px;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            background: var(--card);
+            backdrop-filter: blur(15px);
+            transition:
+                transform 0.25s ease,
+                border-color 0.25s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(167, 139, 250, 0.5);
+        }
+
+        .feature-icon {
+            margin-bottom: 18px;
+            font-size: 26px;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .feature-card p {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        footer {
+            position: relative;
+            z-index: 1;
+            padding: 28px 20px;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            text-align: center;
+            font-size: 13px;
+        }
+
+        footer a {
+            color: var(--accent-light);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 20px;
+            }
+
+            main {
+                padding-top: 50px;
+            }
+
+            h1 {
+                letter-spacing: -3px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .terminal-body {
+                padding: 22px;
+                font-size: 12px;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="brand">
+            <div class="brand-icon">◉</div>
+            <span>Page Pulse</span>
+        </div>
+
+        <a
+            class="nav-link"
+            href="/docs"
+        >
+            API Documentation →
+        </a>
+    </nav>
+
+    <main>
+
+        <section class="hero">
+
+            <div class="eyebrow">
+                <span class="status-dot"></span>
+                Production-ready URL intelligence
+            </div>
+
+            <h1>
+                Know what your
+                <span class="gradient-text">
+                    URLs are saying.
+                </span>
+            </h1>
+
+            <p class="hero-description">
+                Page Pulse audits URLs with precision.
+                Check availability, HTTP status, response time,
+                and more through a resilient production-grade API.
+            </p>
+
+            <div class="actions">
+
+                <a
+                    class="button primary-button"
+                    href="/docs"
+                >
+                    Explore the API
+                </a>
+
+                <a
+                    class="button secondary-button"
+                    href="#how-it-works"
+                >
+                    See how it works
+                </a>
+
+            </div>
+
+        </section>
+
+        <section
+            id="how-it-works"
+            class="audit-visual"
+        >
+
+            <div class="terminal">
+
+                <div class="terminal-header">
+                    <span class="terminal-dot"></span>
+                    <span class="terminal-dot"></span>
+                    <span class="terminal-dot"></span>
+
+                    <span class="terminal-title">
+                        page-pulse / audit
+                    </span>
+                </div>
+
+                <div class="terminal-body">
+
+                    <div>
+                        <span class="muted">$</span>
+                        <span class="command">
+                            POST /audit
+                        </span>
+                    </div>
+
+                    <div class="muted">
+                        → validating target URL...
+                    </div>
+
+                    <div class="muted">
+                        → checking cache...
+                    </div>
+
+                    <div class="muted">
+                        → auditing target...
+                    </div>
+
+                    <div class="success">
+                        ✓ audit completed successfully
+                    </div>
+
+                    <div>
+                        <span class="muted">
+                            status:
+                        </span>
+                        200 OK
+                    </div>
+
+                    <div>
+                        <span class="muted">
+                            response_time:
+                        </span>
+                        245.31 ms
+                    </div>
+
+                    <div>
+                        <span class="muted">
+                            cache:
+                        </span>
+                        MISS → RESULT STORED
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="features">
+
+            <article class="feature-card">
+                <div class="feature-icon">⚡</div>
+
+                <h3>Fast Audits</h3>
+
+                <p>
+                    Measure URL response performance with
+                    timeout protection and controlled concurrency.
+                </p>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-icon">◈</div>
+
+                <h3>Smart Caching</h3>
+
+                <p>
+                    Repeat audits can be served from a configurable
+                    TTL cache without unnecessary refetching.
+                </p>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-icon">🛡</div>
+
+                <h3>Built to Resilience</h3>
+
+                <p>
+                    Rate limiting, structured errors, request IDs,
+                    and logging help keep the service reliable.
+                </p>
+            </article>
+
+        </section>
+
+    </main>
+
+    <footer>
+        Built for Digital Heroes Training Task ·
+        <a
+            href="https://digitalheroesco.com"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            Digital Heroes
+        </a>
+    </footer>
+
+</body>
+
+</html>

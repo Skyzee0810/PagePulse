@@ -13,13 +13,9 @@ from app.services.cache_service import CacheService
 
 class AuditService:
     def __init__(self):
-        self.semaphore = asyncio.Semaphore(
-            settings.max_concurrent_requests
-        )
+        self.semaphore = asyncio.Semaphore(settings.max_concurrent_requests)
 
-        self.cache = CacheService(
-            settings.cache_ttl_seconds
-        )
+        self.cache = CacheService(settings.cache_ttl_seconds)
 
     async def audit_url(self, url: str) -> dict:
         cached_result = self.cache.get(url)
@@ -43,9 +39,7 @@ class AuditService:
     async def _perform_audit(self, url: str) -> dict:
         start_time = time.perf_counter()
 
-        timeout = httpx.Timeout(
-            settings.request_timeout_seconds
-        )
+        timeout = httpx.Timeout(settings.request_timeout_seconds)
 
         try:
             async with httpx.AsyncClient(
@@ -55,14 +49,10 @@ class AuditService:
                 response = await client.get(url)
 
         except httpx.TimeoutException as exc:
-            raise AuditTimeoutError(
-                "The target URL timed out"
-            ) from exc
+            raise AuditTimeoutError("The target URL timed out") from exc
 
         except httpx.RequestError as exc:
-            raise AuditConnectionError(
-                "Unable to connect to the target URL"
-            ) from exc
+            raise AuditConnectionError("Unable to connect to the target URL") from exc
 
         end_time = time.perf_counter()
 

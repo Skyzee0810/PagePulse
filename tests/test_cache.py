@@ -6,9 +6,7 @@ from app.services.cache_service import (
 
 
 def test_cache_returns_stored_value():
-    cache = CacheService(
-        ttl_seconds=60
-    )
+    cache = CacheService(ttl_seconds=60)
 
     cache.set(
         "example.com",
@@ -21,10 +19,9 @@ def test_cache_returns_stored_value():
         "status_code": 200,
     }
 
+
 def test_cache_expires():
-    cache = CacheService(
-        ttl_seconds=1
-    )
+    cache = CacheService(ttl_seconds=1)
 
     cache.set(
         "example.com",

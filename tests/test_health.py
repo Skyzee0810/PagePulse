@@ -5,15 +5,10 @@ from app.main import app
 client = TestClient(app)
 
 
-def test_health_check():
+def test_home_page():
     response = client.get("/")
 
     assert response.status_code == 200
-    assert response.json() == {"message": "Page Pulse is running"}
-
-def test_request_id_is_returned(client):
-    response = client.get("/")
-
-    assert response.status_code == 200
-
-    assert "X-Request-ID" in response.headers
+    assert "Page Pulse" in response.text
+    assert "Built for Digital Heroes Training Task" in response.text
+    assert "https://digitalheroesco.com" in (response.text)

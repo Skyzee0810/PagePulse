@@ -1,5 +1,7 @@
+from pathlib import Path
+
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 
 from app.api.routes import router
 from app.core.exceptions import (
@@ -60,8 +62,12 @@ async def connection_handler(
 app.include_router(router)
 
 
-@app.get("/")
-async def health_check():
-    return {
-        "message": "Page Pulse is running"
-    }
+@app.get(
+    "/",
+    response_class=HTMLResponse,
+    include_in_schema=False,
+)
+async def home():
+    template_path = Path(__file__).parent / "templates" / "home.html"
+
+    return template_path.read_text(encoding="utf-8")

@@ -23,7 +23,6 @@ rate_limit_service = RateLimitService(
 )
 
 
-
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
@@ -80,22 +79,17 @@ async def audit_url(
     audit_request: AuditRequest,
 ):
     client_id = request.client.host
-    
-    if not rate_limit_service.is_allowed(
-        client_id
-    ):
+
+    if not rate_limit_service.is_allowed(client_id):
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
             detail={
                 "code": "RATE_LIMIT_EXCEEDED",
-                "message": (
-                    "Too many requests. "
-                    "Please try again later."
-                ),
+                "message": ("Too many requests. " "Please try again later."),
                 "request_id": request.state.request_id,
             },
         )
-    
+
     request_id = request.state.request_id
     url = str(audit_request.url)
 

@@ -22,9 +22,7 @@ def test_successful_audit():
     ):
         response = client.post(
             "/audit",
-            json={
-                "url": "https://example.com"
-            },
+            json={"url": "https://example.com"},
         )
 
     assert response.status_code == 200
@@ -36,20 +34,17 @@ def test_successful_audit():
     assert data["is_cached"] is False
     assert "request_id" in data
 
+
 def test_invalid_url():
     response = client.post(
         "/audit",
-        json={
-            "url": "not-a-valid-url"
-        },
+        json={"url": "not-a-valid-url"},
     )
 
     assert response.status_code == 422
 
+
 def test_missing_url():
-    response = client.post(
-        "/audit",
-        json={}
-    )
+    response = client.post("/audit", json={})
 
     assert response.status_code == 422
